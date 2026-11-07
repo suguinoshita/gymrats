@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Rats - Contrato de Compromisso</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Noto, serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f5f5f5;
+        color: #222;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        margin-bottom: 25px;
+    }
+
+    h1, h2 {
+        text-align: center;
+        margin-top: 0;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    button {
+        background: #1e3a8a;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    button:hover {
+        background: #142766;
+    }
+
+    .actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    #contractPage {
+        display: none;
+    }
+
+    .contract {
+        max-width: 800px;
+        margin: auto;
+        line-height: 1.6;
+    }
+
+    .contract p {
+        text-align: justify;
+    }
+
+    .signature {
+        margin-top: 70px;
+        text-align: center;
+    }
+
+    .signature-line {
+        width: 300px;
+        border-top: 1px solid #000;
+        margin: 0 auto 10px;
+    }
+
+    .preview-title {
+        border-top: 2px solid #ddd;
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+
+    @media print {
+        #formPage {
+            display: none !important;
+        }
+
+        #contractPage {
+            display: block !important;
+        }
+
+        body {
+            background: white;
+        }
+
+        .card {
+            box-shadow: none;
+            margin: 0;
+        }
+
+        .print-hidden {
+            display: none;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div id="formPage" class="container">
+
+    <div class="card">
+        <h1>Gym Rats</h1>
+        <h2>Contrato de Compromisso</h2>
+
+        <div class="grid">
+
+            <div>
+                <label>Nome do participante</label>
+                <input id="nome" type="text">
+            </div>
+
+            <div>
+                <label>Código do PI</label>
+                <input id="pi" type="text" placeholder="Ex.: PI-2026-Q1">
+            </div>
+
+            <div>
+                <label>Nome do desafio</label>
+                <input id="desafio" type="text" value="Gym Rats">
+            </div>
+
+            <div>
+                <label>Data de início</label>
+                <input id="inicio" type="date">
+            </div>
+
+            <div>
+                <label>Data de término</label>
+                <input id="fim" type="date">
+            </div>
+
+        </div>
+
+        <br>
+
+        <label>Meta a ser batida</label>
+        <textarea id="meta"></textarea>
+
+        <label>Penalização em caso de descumprimento</label>
+        <textarea id="penalizacao"></textarea>
+
+        <div class="actions">
+            <button onclick="gerarContrato()">Gerar Contrato</button>
+        </div>
+
+        <h2 class="preview-title">Pré-visualização</h2>
+
+        <div id="preview" class="contract"></div>
+
+    </div>
+
+</div>
+
+<div id="contractPage" class="container">
+    <div class="card">
+        <div id="contractFinal" class="contract"></div>
+
+        <div class="actions print-hidden">
+            <button onclick="window.print()">Imprimir / Salvar PDF</button>
+            <button onclick="voltar()">Voltar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+const campos = [
+    "nome",
+    "pi",
+    "desafio",
+    "inicio",
+    "fim",
+    "meta",
+    "penalizacao"
+];
+
+campos.forEach(id => {
+    document.getElementById(id).addEventListener("input", atualizarPreview);
+});
+
+function formatarData(data) {
+    if (!data) return "___/___/_____";
+
+    const d = new Date(data + "T00:00:00");
+
+    return d.toLocaleDateString("pt-BR");
+}
+
+function gerarTexto() {
+
+    const nome = document.getElementById("nome").value || "________________________________";
+    const pi = document.getElementById("pi").value || "________________";
+    const desafio = document.getElementById("desafio").value || "Gym Rats";
+    const inicio = formatarData(document.getElementById("inicio").value);
+    const fim = formatarData(document.getElementById("fim").value);
+    const meta = document.getElementById("meta").value || "________________________________";
+    const penalizacao = document.getElementById("penalizacao").value || "________________________________";
+
+    return `
+        <h2>CONTRATO DE COMPROMISSO</h2>
+
+        <p>
+            Pelo presente instrumento particular e de livre e espontânea vontade,
+            o participante <strong>${nome}</strong> declara sua adesão ao desafio
+            <strong>${desafio}</strong>, referente ao período
+            <strong>${pi}</strong>, compreendido entre
+            <strong>${inicio}</strong> e
+            <strong>${fim}</strong>.
+        </p>
+
+        <p>
+            O participante assume publicamente perante os demais integrantes do
+            desafio o compromisso de atingir a seguinte meta:
+        </p>
+
+        <p>
+            <strong>${meta}</strong>
+        </p>
+
+        <p>
+            Caso a meta acima não seja alcançada até o encerramento do período,
+            o participante compromete-se a cumprir integralmente a seguinte
+            penalização:
+        </p>
+
+        <p>
+            <strong>${penalizacao}</strong>
+        </p>
+
+        <p>
+            Este contrato possui caráter estritamente recreativo, honorífico e de
+            confraternização entre amigos, não gerando obrigações civis,
+            trabalhistas ou financeiras executáveis judicialmente. Seu propósito
+            é apenas reforçar o espírito competitivo saudável, a disciplina e a
+            diversão inerentes ao desafio Gym Rats.
+        </p>
+
+        <p>
+            E, para que fique registrado perante a ilustre comunidade dos Gym Rats,
+            o participante firma simbolicamente o presente compromisso.
+        </p>
+
+        <p>
+            É verdade esse contrato.
+        </p>
+
+        <div class="signature">
+            <div class="signature-line"></div>
+            <strong>${nome}</strong>
+            <br>
+            Participante
+        </div>
+    `;
+}
+
+function atualizarPreview() {
+    document.getElementById("preview").innerHTML = gerarTexto();
+}
+
+function gerarContrato() {
+    document.getElementById("contractFinal").innerHTML = gerarTexto();
+
+    document.getElementById("formPage").style.display = "none";
+    document.getElementById("contractPage").style.display = "block";
+
+    window.scrollTo(0,0);
+}
+
+function voltar() {
+    document.getElementById("contractPage").style.display = "none";
+    document.getElementById("formPage").style.display = "block";
+}
+
+atualizarPreview();
+
+</script>
+
+</body>
+</html>
