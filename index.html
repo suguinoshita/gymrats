@@ -111,6 +111,16 @@
         padding-top: 15px;
         margin-top: 20px;
     }
+   
+    .logo-container {
+       text-align: center;
+       margin-bottom: 20px;
+    }
+
+    .logo-container img {
+       max-width: 180px;
+       height: auto;
+    }
 
     @media print {
         #formPage {
@@ -153,23 +163,23 @@
             </div>
 
             <div>
-                <label>Código do PI</label>
-                <input id="pi" type="text" placeholder="Ex.: PI-2026-Q1">
+                <label>PI</label>
+                <input id="pi" type="text" placeholder="Ex.: PI26E">
             </div>
 
             <div>
                 <label>Nome do desafio</label>
-                <input id="desafio" type="text" value="Gym Rats">
+                <input id="desafio" type="text" value="Gym Rats PI26E - Então é Natal">
             </div>
 
             <div>
                 <label>Data de início</label>
-                <input id="inicio" type="date">
+                <input id="inicio" type="date" value="07/11/2026">
             </div>
 
             <div>
                 <label>Data de término</label>
-                <input id="fim" type="date">
+                <input id="fim" type="date" value="05/02/2027">
             </div>
 
         </div>
@@ -240,6 +250,10 @@ function gerarTexto() {
     const penalizacao = document.getElementById("penalizacao").value || "________________________________";
 
     return `
+        <div class="logo-container">
+           <img src="logo.png" alt="Gym Rats">
+        </div>
+        
         <h2>CONTRATO DE COMPROMISSO</h2>
 
         <p>
